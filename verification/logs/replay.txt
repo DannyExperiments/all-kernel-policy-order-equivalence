@@ -1,0 +1,4 @@
+28,125 exact occupancy-policy return identities passed.
+All 14 quadratic interpolation grids passed exact rank and domain checks.
+15,563 ordered state-action table pairs match the star-kernel test.
+All 42 illustrated sign tests passed, including an interior reversal and a boundary tie.

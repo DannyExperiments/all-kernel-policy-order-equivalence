@@ -1,0 +1,108 @@
+\documentclass[11pt,a4paper]{amsart}
+\usepackage[hmargin=.83in,vmargin=.70in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Policy-order equivalence across all transition kernels}}
+\urlstyle{same}
+\setlength{\emergencystretch}{2em}
+\linespread{0.96}
+\DeclareMathSizes{8}{8}{8}{8}
+\DeclareMathSizes{9}{9}{8}{8}
+\DeclareMathSizes{10.95}{10.95}{8}{8}
+\renewcommand{\bibliofont}{\normalsize\raggedright}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\R}{\mathbb R}
+\newcommand{\sgn}{\operatorname{sgn}}
+\title[All-kernel policy-order equivalence]{Policy-order equivalence across all transition kernels}
+\date{}
+\begin{document}
+\begin{abstract}
+Two rewards can order stationary randomized policies identically in one environment and disagree when the transition kernel changes. We give a finite algebraic criterion for identical weak orders over all kernels of a finite discounted Markov decision process with a full-support start law. The criterion uses minors of Bellman advantage numerators and signed factor tests on the relative interiors of all product faces. Two interpolation grids make the evaluation steps finite. For state--action rewards and at least two actions, a self-loop kernel and a family of star kernels suffice, and equivalence is exactly positive affine rescaling of the reward table.
+\end{abstract}
+\maketitle
+
+\section{Scope and determinant criterion}
+Let $S,A$ be finite nonempty sets, let $0<\gamma<1$, and let the start law $\mu$ have full support. A kernel $K$ has independent stochastic rows $p_{sa}$, one per state--action pair, so its domain is the full closed product of row simplices. A reward table $R_k(s,a,t)$, $k=1,2$, may depend on the successor $t$. We compare the weak orders of stationary randomized policies by their expected discounted returns, including all ties.
+
+For a fixed kernel Skalse and Abate characterize this order via shaping, scaling and successor redistribution \cite[Theorem~26]{skalse}. In Appendix A.7 they distinguish the intersection over all actual kernels from the stronger order on arbitrary trajectory distributions. A separation example is already in Skalse et al. \cite[Theorem~5]{starc}. The open all-kernel question is stated in \cite[Appendix~A.7, p.~94]{skalse} and in Skalse's dissertation \cite[p.~183]{thesis}. We address that intersection by a finite algebraic condition.
+
+Choose a baseline action $a_0(s)$ at each state. Let $L_{sa}=e_s^{\top}-\gamma p_{sa}$ be a row, and let $b_{k,sa}=\sum_t p_{sa}(t)R_k(s,a,t)$. Stack the baseline rows $L_{s,a_0(s)}$ into the matrix $M$, and their rewards into the column $b_k^0$. For each nonbaseline pair $i=(s,a)$ put
+\[
+   F_{k,i}=\det\begin{pmatrix}M&b_k^0\\ L_{sa}&b_{k,sa}\end{pmatrix}.
+\]
+The polynomial coordinates are free affine coordinates on each row simplex. Every determinant is affine separately in each row group, since each transition row occurs in at most one determinant row. The same holds for restrictions to product faces.
+
+\begin{theorem}\label{thm:criterion}
+The two rewards induce the same weak order for every kernel if and only if both tests hold.
+\begin{enumerate}
+\item Each polynomial $F_{1,i}F_{2,j}-F_{1,j}F_{2,i}$ is identically zero.
+\item For each $i$ and each nonempty product face, restrict $F_{1,i},F_{2,i}$ to the affine hull of that face. If one restriction is identically zero, both are. Otherwise factor both over the reals. Call a nonconstant irreducible \emph{mixed} if its vertex values include both strict signs. The mixed factors must match up to nonzero constants, and the two restrictions must have the same sign at one common nonzero point in the relative interior.
+\end{enumerate}
+\end{theorem}
+
+Both tests have finite evaluation grids given below. The theorem is a finite algebraic characterization for real data and is effective for rational or real algebraic inputs with exact real-algebraic operations. General real quantifier elimination already gives a decidability route \cite{basu}. This gives an explicit low-row-degree criterion. There is no running-time or simple reward-normal-form claim for successor-dependent rewards.
+
+\section{Occupancy reduction at a fixed kernel}
+The unnormalized discounted state--action occupancy $x$ satisfies
+\[
+       \sum_a x_{sa}-\gamma\sum_{t,a}p_{ta}(s)x_{ta}=\mu(s),\qquad x\geq0.
+\]
+Conversely, from any nonnegative solution the state totals are positive, since they are at least $\mu(s)$. Set $\pi(a\mid s)=x_{sa}/\sum_b x_{sb}$. The flow equation for these totals becomes the discounted state flow for $\pi$, whose solution is unique because $I-\gamma P_\pi^{\top}$ is invertible. Thus this $\pi$ has occupancy $x$. The occupancy of a fully mixed policy is strictly positive, so the feasible polytope has interior relative to the affine flow space.
+
+The baseline columns of the flow matrix are $M^{\top}$, where $M=I-\gamma P_0$ for the stochastic baseline matrix $P_0$. It is invertible and $\det M>0$ by continuity from $I$ along $I-tP_0$, $0\leq t\leq\gamma$, all of which are invertible. The affine flow space therefore has the nonbaseline coordinates as free coordinates. The return of reward $k$ is $\sum_{s,a}x_{sa}b_{k,sa}$. With $V_k^0=M^{-1}b_k^0$, subtracting $L_{sa}V_k^0$ from the coefficient $b_{k,sa}$ subtracts the same constant $\mu^{\top}V_k^0$ from all returns. Baseline coefficients vanish. The remaining coefficients are the one-step advantages against the baseline. The block determinant formula gives each of them as $F_{k,i}/\det M$.
+
+Two linear functionals on a set with nonempty interior induce the same weak order exactly when their coefficient vectors are positive multiples of one another or both vanish. Indeed, small movements from an interior point realize both directions in any specified direction. Equal comparisons then force equal kernels and equal orientation. This argument includes zero-dimensional policy space, where both coefficient vectors are empty and there is just one policy. For the nonbaseline vectors, vanishing minors express collinearity and coordinatewise equal signs, including zeros, select the positive-ray condition. A polynomial vanishing over the full kernel product has all coefficients zero because the product has nonempty relative interior. This proves the first test's necessity and reduces the rest to coordinatewise sign agreement.
+
+\section{Sign agreement on all faces}
+\begin{lemma}\label{lem:sign}
+On the relative interior of a product face, two rowwise-affine polynomials have the same signs everywhere if and only if they pass the mixed-factor and sample-sign test in Theorem~\ref{thm:criterion}.
+\end{lemma}
+\begin{proof}
+If a polynomial is identically zero, equal signs on the open affine domain force the other to be identically zero. Assume both nonzero. In the polynomial ring of the face coordinates, degree in one row group is additive under multiplication. The leading homogeneous parts in that group multiply nontrivially over the integral domain of the other coordinates. Thus every nonconstant factor is also rowwise affine, and no such factor occurs with multiplicity two.
+
+Rowwise affine interpolation expresses every relative-interior value as a weighted average of vertex values with positive weights. A nonzero factor with no mixed vertex signs has constant strict sign on the relative interior. A mixed factor $h$ assumes both signs at interior points by continuity. Choose two such interior endpoints so that none of their hybrids, obtained by replacing row groups one at a time, is a zero of $h$. These endpoint constraints exclude finitely many proper zero sets: each hybrid map onto the face's relative interior is a coordinate projection and the corresponding polynomial is nonzero. Adjacent hybrids of opposite signs differ in one row. On their joining segment $h$ is affine, and its zero has a nonzero partial derivative in some free coordinate of that row.
+
+Suppose the signs of $f$ and $g$ agree and $h$ is a mixed irreducible divisor of $f$. Near the regular zero just constructed write $h(y,t)=u(y)t+v(y)$ in a free coordinate $t$, with $u\ne0$ in a neighborhood. Here $y$ collects all remaining coordinates. For $y$ in an open subset, $t=-v(y)/u(y)$ gives a relative-interior zero of $f$, which must also be a zero of $g$. On clearing denominators, the resulting polynomial identity for $g$ holds everywhere. Over the fraction field in $y$, $h$ divides $g$. Since the irreducible $h$ depends on $t$, it is primitive as a polynomial in $t$, and Gauss's lemma gives divisibility in the polynomial ring. Exchanging the two polynomials shows their mixed factors coincide up to associates.
+
+Conversely, factor their common mixed product out of both $f$ and $g$. The remaining products have constant strict signs on the relative interior, so one common nonzero value fixes whether those signs agree. The common mixed product then gives identical signs everywhere, including its zeros.
+\end{proof}
+
+All kernels belong to the relative interior of exactly one product face. Thus the lemma gives sign agreement, including boundary ties, on the entire closed kernel domain. It proves Theorem~\ref{thm:criterion} together with the occupancy reduction.
+
+\section{Finite evaluation grids and a ratio property}
+For a row simplex, homogenize a polynomial of degree at most two to degree two in barycentric coordinates. Its vertex values recover the squared coefficients and its edge midpoint values then recover the mixed coefficients. On the product, tensor these grids over rows. The minors have degree at most two in each row group, so these evaluations certify their identity.
+
+To choose the nonzero sample in a face, take a row face with $m\geq2$ vertices and barycenter $c$. Using their barycentric coordinates, sample $c$, then $c\pm(e_i-e_m)/(2m)$ for $i<m$, then $c+(e_i+e_j-2e_m)/(4m)$ for $i<j<m$. A singleton uses its unique point. All these points are in the relative interior. The opposite displacements recover the linear and squared coefficients at $c$ along basis directions after the constant term is known. Pair displacements then recover mixed coefficients. Tensoring gives a determining grid for polynomials of degree at most two in every row group. In the nonzero case of the second test the product of the two restrictions is such a polynomial, so it is nonzero at some grid point.
+
+When the tests hold and at least two components $F_{1,i},F_{1,j}$ are nonidentically zero, their corresponding ratios $F_{2,i}/F_{1,i}=F_{2,j}/F_{1,j}$ agree as rational functions. The first depends only on baseline rows and the independent row $i$, while the second depends only on baseline rows and row $j$. A rational function represented in both these subfields belongs to the baseline field: for example, choose generic constant coordinates for row $i$ so its denominator is not the zero polynomial in the baseline variables. Substitution into the rational identity eliminates the alternative row. This assertion concerns rational functions and makes no assertion about a ratio at a vanishing denominator.
+
+\section{Two exact examples}
+Consider two states and two actions, with all rewards zero except those of one nonbaseline row. All baseline values vanish, so the sole possibly nonzero advantage is the immediate expected reward in that row. Let $p$ be its probability of reaching the first state, and fix any other rows. Successor reward vectors $(1,-1)$ and $(2,-1)$ give advantages $2p-1$ and $3p-1$. Signs agree at the deterministic endpoints, but at $p=2/5$ the advantages are $-1/5$ and $1/5$. Thus deterministic kernels alone can miss a strict reversal.
+
+The same setup with successor reward vectors $(1,0)$ and $(1,1)$ gives advantages $p$ and $1$. Their signs agree for $p>0$, but at $p=0$ the first reward ties all policies and the second has a strict comparison. This shows why every face is checked. The published STARC separation example \cite[Theorem~5]{starc} takes positive successor vectors $(1,1/2)$ and $(1/2,1)$ in this single-row construction. Its advantage signs agree for every kernel, even though shaping and scaling alone do not connect the two rewards.
+
+\section{State--action rewards and deterministic tests}
+\begin{theorem}\label{thm:affine}
+Suppose the rewards $r_k(s,a)$ are successor independent and $|A|\geq2$. Their weak orders agree on every kernel if and only if $r_2=\lambda r_1+b$ on $S\times A$ for constants $\lambda>0$ and $b\in\R$. It suffices to test a fixed family of at most $|S|+1$ deterministic kernels.
+\end{theorem}
+\begin{proof}
+Choose a baseline and a distinct distinguished alternative at each state. Use the kernel $L$ where every action self-loops. For each anchor $h$, create $T_h$ from $L$ by redirecting the distinguished alternative from every $s\ne h$ to $h$. Baseline transitions remain self-loops, so the baseline value at $s$ in all tests is $r_k(s,a_0(s))/(1-\gamma)$. On $L$ all alternative advantages are exactly the action differences $\Delta_k(s,a)=r_k(s,a)-r_k(s,a_0(s))$. On $T_h$ the only changed advantages are the redirected ones, each gaining
+\[
+ \frac{\gamma}{1-\gamma}\bigl(r_k(h,a_0(h))-r_k(s,a_0(s))\bigr).
+\]
+
+If some $\Delta_1(h,a)$ is nonzero, agreement on $L$ implies $\Delta_2=\lambda\Delta_1$ for one positive scale. Therefore $r_2(s,a)=\lambda r_1(s,a)+b_s$ for each $s$. In $T_h$ the nonzero entry at $h$ is unchanged, forcing the same scale there. At each redirected pair, subtracting $\lambda$ times the first advantage from the second leaves $\gamma(b_h-b_s)/(1-\gamma)$, which must vanish. Thus all the offsets coincide.
+
+If all $\Delta_1$ vanish, agreement on $L$ gives $\Delta_2=0$. The rewards are now functions of state only. Any anchor test gives positive proportionality, or simultaneous vanishing, of the differences $r_k(h)-r_k(s)$ over $s\ne h$. This yields one positive scale and one common offset across all states. For a singleton state the self-loop test is sufficient. Finally any positive affine transformation shifts all policy returns by the policy-independent constant $b/(1-\gamma)$ after scaling by $\lambda$, so it preserves the weak order on every kernel.
+\end{proof}
+
+A linear scan of the two tables tests the affine relation. With only one action there is only one policy, and all rewards are equivalent. The state--action companion uses the same weak-order notion as the main theorem. Uniform additive preservation of optimal policies for every base reward is a different quantifier order \cite{ng,jenner}.
+
+\section*{AI assistance}
+ChatGPT Astra 6.2 (OpenAI) generated the recovered proof, state--action supplement and original replay under human direction. OpenAI Codex independently reviewed the mathematics. GPT-6.2 Sol (OpenAI) checked primary sources and prepared this manuscript, the extended replay and illustration. DannyExperiments is the project citation identity.
+
+\bibliographystyle{amsplain}
+\bibliography{references}
+\end{document}

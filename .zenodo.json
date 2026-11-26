@@ -1,0 +1,32 @@
+{
+  "title": "Policy-order equivalence across all transition kernels",
+  "upload_type": "software",
+  "publication_date": "2026-11-27",
+  "version": "1.0.0",
+  "creators": [
+    {
+      "name": "DannyExperiments"
+    }
+  ],
+  "keywords": [
+    "Markov decision processes",
+    "reward equivalence",
+    "policy ordering",
+    "transition kernels",
+    "inverse reinforcement learning",
+    "occupancy measures",
+    "multiaffine polynomials",
+    "potential shaping"
+  ],
+  "description": "<p>This note gives a finite criterion for the all-transition-kernel policy-order question posed by Joar Skalse and Alessandro Abate in Appendix A.7 of Partial Identifiability and Misspecification in Inverse Reinforcement Learning. It compares the weak orders of all stationary randomized policies for two successor-dependent rewards on a finite discounted Markov decision process with a full-support start law.</p><p>At one kernel, eliminating baseline occupancy coordinates produces a vector of Bellman advantage numerators for each reward. Equality of weak orders is positive proportionality or simultaneous vanishing. Polynomial minors enforce collinearity and a sign-factor test on each relative face checks orientation and ties. Rowwise affine structure makes these sign tests explicit. Two product grids verify the identities and locate sign samples. The method is an exact finite algebraic characterization, with no general efficiency claim. It builds on the prior fixed-kernel characterization and respects the published separation from unrestricted trajectory-order equivalence.</p><p>A companion shows that state–action rewards with at least two actions are equivalent exactly when one is a positive affine transform of the other. A self-loop kernel and redirect-to-anchor kernels form a fixed family of at most one more than the number of states. The general successor-dependent case needs more than deterministic kernels, as shown by explicit interior and boundary examples.</p><p>The deposit includes the manuscript, LaTeX source, bibliography, citation metadata, evidence archive and repository checksums. The exact replay checks policy-return identities, both interpolation grids and a census of state–action table pairs. The rotating figure and offline explorer show the interior reversal and boundary tie. The mathematical review was internal. External peer review and formal verification are pending.</p><p>ChatGPT Astra 6.2 (OpenAI) generated the recovered proof, state–action supplement and original replay under human direction. OpenAI Codex independently reviewed the mathematics. GPT-6.2 Sol (OpenAI) checked primary sources and prepared the manuscript, extended replay and illustration. DannyExperiments is the project citation identity.</p>",
+  "access_right": "open",
+  "license": "other-closed",
+  "notes": "All rights reserved. Publicly downloadable files are supplied without a repository-wide reuse license.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/DannyExperiments/all-kernel-policy-order-equivalence/releases/tag/v1.0.0",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}

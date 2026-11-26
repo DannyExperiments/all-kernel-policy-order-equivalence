@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transition rows and policy order</title>
+<style>
+:root{color-scheme:dark;--bg:#111a30;--panel:#1e304b;--text:#f6f8ff;--muted:#c7d5e9;--violet:#c0b7ff;--teal:#6df1ca;--gold:#ffc487}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:clamp(16px,3.6vw,18px)/1.45 system-ui,sans-serif}
+main{max-width:50rem;margin:auto;padding:clamp(.8rem,4vw,2rem)}
+h1,p{margin:0 0 .65rem}h1{font-size:clamp(2rem,7vw,3.3rem);line-height:1.06}.intro,details{color:var(--muted)}
+.controls,.legend{display:flex;flex-wrap:wrap;gap:.45rem .7rem;align-items:center;margin:.66rem 0}
+button{font:inherit;font-weight:650;color:var(--text);border:1px solid #8eadd1;border-radius:.56rem;background:var(--panel);padding:.4rem .65rem;cursor:pointer}
+button[aria-pressed=true]{color:var(--bg);background:var(--teal);border-color:var(--teal)}
+canvas{display:block;width:100%;height:auto;background:var(--panel);border-radius:.8rem;touch-action:pan-y;cursor:grab}
+input{min-width:7rem;flex:1;accent-color:var(--teal)}
+table{width:100%;border-collapse:collapse;margin:.45rem 0;font-variant-numeric:tabular-nums}th,td{border-bottom:1px solid #526b8c;text-align:left;padding:.25rem .36rem}
+.r1{color:var(--violet)}.r2{color:var(--teal)}#result{font-weight:700}
+details{margin-top:.76rem;border-top:1px solid #526b8c;padding-top:.65rem}summary{cursor:pointer}
+</style>
+<main>
+<h1>Transition rows and policy order</h1>
+<p class="intro">Move the same transition probability p for both rewards. The signs of their advantages tell which action each reward prefers.</p>
+<div class="controls" id="cases" role="group" aria-label="Choose a reward pair">
+<button type="button">Interior reversal</button><button type="button">Boundary tie</button>
+</div>
+<label class="controls" for="prob">Probability p <input id="prob" type="range" min="0" max="20" value="8" aria-label="Probability of the first successor"></label>
+<canvas id="chart" width="700" height="413" role="img" aria-label="Rotatable 3D view of the two advantage functions, with exact values in the table below."></canvas>
+<label class="controls" for="angle">Rotate plot <input id="angle" type="range" min="12" max="57" value="24" aria-label="Rotation angle in degrees"></label>
+<p>p = <strong id="p-value">2/5</strong></p>
+<div aria-live="polite">
+<table aria-label="Exact policy advantage">
+<thead><tr><th scope="col">Reward</th><th scope="col">Advantage</th><th scope="col">Prefers</th></tr></thead>
+<tbody>
+<tr class="r1"><th scope="row">Reward 1</th><td id="v1">−1/5</td><td id="o1">Baseline</td></tr>
+<tr class="r2"><th scope="row">Reward 2</th><td id="v2">1/5</td><td id="o2">Alternative</td></tr>
+</tbody>
+</table>
+<p id="result">The rewards prefer opposite actions.</p>
+</div>
+<details><summary>How to read the surfaces</summary>
+<p>Only the alternative action in one state receives reward. The baseline has value zero, so the alternative's Bellman advantage is its immediate expected reward. Both surfaces stay flat in the depth direction because the other transition rows do not affect these advantages.</p>
+<p>Interior reversal uses successor rewards (1, −1) and (2, −1). At both deterministic endpoints the signs agree, but at p = 2/5 they differ. Boundary tie uses (1, 0) and (1, 1). They agree for p &gt; 0 but have different tie behavior at zero.</p>
+</details>
+</main>
+<script>
+"use strict";
+const c=document.getElementById("chart"),ctx=c.getContext("2d");
+const angle=document.getElementById("angle"), slider=document.getElementById("prob");
+const choices=Array.from(document.querySelectorAll("#cases button"));
+const vertices=[];
+for(const p of [0,1])for(const q of [0,1])for(const v of [-1,2])vertices.push([p,q,v]);
+let scene=0,drag=null;
+function outputs(n){return scene===0?[2*n-20,3*n-20]:[n,20];}
+function project([p,q,value]){
+ const x=2*p-1,y=2*q-1,z=2*(value+1)/3-1,a=Number(angle.value)*Math.PI/180;
+ return [350+142*(Math.cos(a)*x-Math.sin(a)*y),205+60*(Math.sin(a)*x+Math.cos(a)*y)-90*z];
+}
+function path(points){
+ ctx.beginPath();ctx.moveTo(...points[0]);for(const p of points.slice(1))ctx.lineTo(...p);
+}
+function line(points,color,width){
+ path(points);ctx.lineWidth=width;ctx.strokeStyle=color;ctx.stroke();
+}
+function render(){
+ ctx.clearRect(0,0,c.width,c.height);
+ for(const [i,a] of vertices.entries())for(const b of vertices.slice(i+1)){
+  if(a.reduce((sum,value,j)=>sum+Number(value!==b[j]),0)===1)line([project(a),project(b)],"#526b8c",3);
+ }
+ const colors=["#c0b7ff","#6df1ca"];
+ for(let i=0;i<2;i++){
+  const a=outputs(0)[i]/20,b=outputs(20)[i]/20;
+  const rim=[[0,.18,a],[1,.18,b],[1,.78,b],[0,.78,a]].map(project);
+  path(rim);ctx.closePath();ctx.fillStyle=i?"#326d70":"#595a86";ctx.fill();ctx.strokeStyle=colors[i];ctx.lineWidth=2;ctx.stroke();
+  line([project([0,.48,a]),project([1,.48,b])],colors[i],4);
+ }
+ const n=Number(slider.value),points=outputs(n).map(v=>project([n/20,.48,v/20]));
+ line(points,"#ffc487",4);
+ for(const i of [1,0]){
+  const radius=i?12:8;ctx.beginPath();ctx.arc(...points[i],radius,0,2*Math.PI);ctx.fillStyle=colors[i];ctx.fill();
+ }
+}
+function gcd(a,b){while(b){[a,b]=[b,a%b];}return a;}
+function fraction(x){
+ const a=Math.abs(x),d=gcd(a,20), numerator=a/d,den=20/d;
+ return (x<0?"−":"")+(den===1?String(numerator):numerator+"/"+den);
+}
+function preference(x){return x===0?"Tie":x>0?"Alternative":"Baseline";}
+function update(){
+ const n=Number(slider.value),[a,b]= outputs(n);
+ document.getElementById("p-value").textContent=fraction(n);
+ for(const [i,v] of [a,b].entries()){
+  document.getElementById("v"+(i+1)).textContent=fraction(v);
+  document.getElementById("o"+(i+1)).textContent=preference(v);
+ }
+ document.getElementById("result").textContent=Math.sign(a)===Math.sign(b)?"The weak orders agree at this p.":a===0||b===0?"One reward ties and the other is strict.":"The rewards prefer opposite actions.";
+ choices.forEach((button,i)=>button.setAttribute("aria-pressed",String(i===scene)));
+ render();
+}
+choices.forEach((b,i)=>b.addEventListener("click",()=>{scene=i;slider.value=i===0?"8":"0";update();}));
+slider.addEventListener("input",update);
+angle.addEventListener("input",render);
+c.addEventListener("pointerdown",e=>{drag=[e.clientX,Number(angle.value)];c.setPointerCapture(e.pointerId);});
+c.addEventListener("pointermove",e=>{if(!drag)return;angle.value=String(Math.max(12,Math.min(57,drag[1]+.45*(e.clientX-drag[0]))));render();});
+for(const event of ["pointerup","pointercancel","lostpointercapture"])c.addEventListener(event,()=>{drag=null;});
+update();
+</script>
+</html>

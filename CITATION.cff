@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "Cite this version of the research release."
+type: software
+title: "Policy-order equivalence across all transition kernels"
+authors:
+  - name: "DannyExperiments"
+version: "1.0.0"
+date-released: 2026-11-27
+doi: "10.5281/zenodo.24572485"
+url: "https://doi.org/10.5281/zenodo.24572485"
+repository-code: "https://github.com/DannyExperiments/all-kernel-policy-order-equivalence"
+keywords:
+  - "Markov decision processes"
+  - "reward equivalence"
+  - "policy ordering"
+  - "transition kernels"
+  - "inverse reinforcement learning"
+  - "occupancy measures"
+  - "multiaffine polynomials"
+  - "potential shaping"
+preferred-citation:
+  type: software
+  title: "Policy-order equivalence across all transition kernels"
+  authors:
+    - name: "DannyExperiments"
+  version: "1.0.0"
+  date-released: 2026-11-27
+  doi: "10.5281/zenodo.24572485"
+  url: "https://doi.org/10.5281/zenodo.24572485"
+  repository-code: "https://github.com/DannyExperiments/all-kernel-policy-order-equivalence"
